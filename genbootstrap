@@ -1,0 +1,28 @@
+#!/bin/bash -e
+
+TMPDIR=$(mktemp -d /tmp/genbootstrap.XXXXXX)
+VERSION=$(date +%Y.%m.%d)
+
+cat > "${TMPDIR}"/pacman.conf << "EOF"
+[options]
+Architecture = auto
+CheckSpace
+Color
+SigLevel = Required DatabaseOptional
+[core]
+Include = /etc/pacman.d/mirrorlist
+[extra]
+Include = /etc/pacman.d/mirrorlist
+[community]
+Include = /etc/pacman.d/mirrorlist
+EOF
+for arch in i686 x86_64; do
+  mkdir "${TMPDIR}"/root.${arch}
+  setarch ${arch} -- pacstrap -C "${TMPDIR}"/pacman.conf -c -d -G -M "${TMPDIR}"/root.${arch}/ arch-install-scripts
+  rm "${TMPDIR}"/root.${arch}/var/lib/pacman/sync/*
+  (cd "${TMPDIR}"; bsdtar -cf - root.${arch} | gzip -9 > "${TMPDIR}"/archlinux-bootstrap-${VERSION}-${arch}.tar.gz)
+  rm -rf "${TMPDIR}"/root.${arch}
+done
+rm "${TMPDIR}"/pacman.conf
+
+echo "Files are in ${TMPDIR}."
