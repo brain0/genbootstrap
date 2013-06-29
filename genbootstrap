@@ -20,6 +20,7 @@ for arch in i686 x86_64; do
   mkdir "${TMPDIR}"/root.${arch}
   setarch ${arch} -- pacstrap -C "${TMPDIR}"/pacman.conf -c -d -G -M "${TMPDIR}"/root.${arch}/ arch-install-scripts
   rm "${TMPDIR}"/root.${arch}/var/lib/pacman/sync/*
+  cp "$(dirname "$0")"/README "${TMPDIR}"/root.${arch}/
   (cd "${TMPDIR}"; bsdtar -cf - root.${arch} | gzip -9 > "${TMPDIR}"/archlinux-bootstrap-${VERSION}-${arch}.tar.gz)
   rm -rf "${TMPDIR}"/root.${arch}
 done
