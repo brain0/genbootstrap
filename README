@@ -9,6 +9,7 @@ a live system, follow these instructions:
 * If you have bash 4 or later installed, run
    # /tmp/root.x86_64/bin/arch-chroot /tmp/root.x86_64/
   If you don't have bash 4, run the following commands:
+   # cp /etc/resolv.conf /tmp/root.x86_64/etc
    # mount --rbind /proc /tmp/root.x86_64/proc
    # mount --rbind /sys /tmp/root.x86_64/sys
    # mount --rbind /dev /tmp/root.x86_64/dev
